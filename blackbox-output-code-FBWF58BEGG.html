@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OrNut - حيث يلتقي الذهب بالمذاق</title>
+  <style>
+    /* Reset & base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+      font-family: 'Georgia', serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      user-select: none;
+    }
+    body {
+      background: #f7f7f7;
+      color: #333;
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.6;
+      padding: 20px;
+      perspective: 1000px;
+      scroll-padding-top: 60px;
+    }
+    h1, h2, h3 {
+      font-family: 'Georgia', serif;
+      font-weight: normal;
+      margin-bottom: 1rem;
+      color: #b8860b; /* ذهب */
+      text-align: center;
+      text-shadow: 0 0 5px rgba(184,134,11,0.7);
+      user-select: text;
+    }
+    h1 {
+      font-size: 2.7rem;
+      margin-bottom: 2rem;
+    }
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Glassmorphism container */
+    .glass {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 2rem;
+      margin-bottom: 3rem;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+      transition: transform 0.3s ease;
+    }
+
+    /* Images container */
+    .products {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+    }
+    .product {
+      flex: 1 1 300px;
+      background: rgba(255, 255, 255, 0.20);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      perspective: 800px;
+    }
+    .product img {
+      display: block;
+      width: 100%;
+      height: auto;
+      box-shadow: 0 15px 20px rgba(0,0,0,0.5);
+      transition: box-shadow 0.3s ease;
+      border-radius: 20px;
+      pointer-events: none;
+      user-select: none;
+    }
+    .product:hover {
+      box-shadow: 0 20px 35px rgba(0,0,0,0.7);
+    }
+    .product:hover img {
+      box-shadow: 0 25px 40px rgba(0,0,0,0.8);
+    }
+
+    /* 3D Tilt effect container - will be controlled by JS */
+    .tilt {
+      transform-style: preserve-3d;
+      will-change: transform;
+      transition: transform 0.2s ease-out;
+    }
+
+    /* Form styling */
+    form {
+      max-width: 600px;
+      margin: 2rem auto;
+      background: rgba(255,255,255,0.15);
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      user-select: text;
+    }
+    form label {
+      display: block;
+      margin-bottom: .3rem;
+      color: #b8860b;
+      font-weight: bold;
+    }
+    form input {
+      width: 100%;
+      padding: 0.6rem 1rem;
+      margin-bottom: 1.2rem;
+      border-radius: 12px;
+      border: 1px solid #b8860b;
+      background: rgba(255, 255, 255, 0.3);
+      font-size: 1rem;
+      color: #333;
+      outline-offset: 3px;
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+    form input:focus {
+      background: rgba(255, 255, 255, 0.6);
+      border-color: #ffd700;
+    }
+    form button {
+      display: block;
+      margin: 0 auto;
+      background: #b8860b;
+      color: #fff;
+      border: none;
+      padding: 0.8rem 3rem;
+      font-size: 1.2rem;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 5px 10px rgba(184,134,11,0.7);
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+    form button:active {
+      transform: translateY(2px);
+    }
+    form button:hover {
+      background-color: #ffd700;
+      color: #222;
+      box-shadow: 0 7px 14px rgba(255, 215, 0, 0.8);
+    }
+
+    /* Contact info */
+    footer {
+      max-width: 700px;
+      margin: 3rem auto 2rem;
+      text-align: center;
+      color: #b8860b;
+      font-size: 1.1rem;
+      font-family: 'Georgia', serif;
+      user-select: text;
+    }
+    footer a {
+      color: #ffd700;
+      text-decoration: none;
+      margin: 0 0.5rem;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+    footer a:hover {
+      color: #fff;
+      text-shadow: 0 0 8px #ffd700;
+    }
+
+    /* Scrollbar styling for iOS smooth feel */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(184,134,11,0.6);
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .products {
+        flex-direction: column;
+        align-items: center;
+      }
+      .product {
+        max-width: 90vw;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <!-- قسم الترحيب -->
+  <section class="glass" aria-label="Welcome section">
+    <h1>أور نات.. حيث يلتقي الذهب بالمذاق</h1>
+  </section>
+
+  <!-- عرض المنتجات -->
+  <section class="glass" aria-label="Products display">
+    <h2>منتجاتنا</h2>
+    <div class="products">
+
+      <!-- الجوزة -->
+      <div class="product tilt" tabindex="0" role="img" aria-label="الجوزة - كراميل دي لايتس">
+        <img 
+          src="https://i.ibb.co/ck1SGFJ/or-nut-caramel-box-1.jpg" 
+          alt="صندوق الجوزة بالكراميل" 
+          loading="lazy"
+          />
+      </div>
+
+      <!-- الكراميل -->
+      <div class="product tilt" tabindex="0" role="img" aria-label="الكراميل - شوكولاتة ترافل">
+        <img 
+          src="https://i.ibb.co/0mS3yqK/or-nut-truffle-box-1.jpg"
+          alt="صندوق الكراميل بشوكولاتة ترافل"
+          loading="lazy"
+          />
+      </div>
+    </div>
+  </section>
+
+  <!-- نموذج الطلب -->
+  <section class="glass" aria-label="Order form">
+    <h2>نموذج الطلبية</h2>
+    <form id="orderForm" novalidate aria-describedby="formAlert">
+      <label for="firstName">الاسم</label>
+      <input type="text" id="firstName" name="firstName" required autocomplete="given-name" placeholder="أدخل الاسم الأول" />
+      <label for="lastName">اللقب</label>
+      <input type="text" id="lastName" name="lastName" required autocomplete="family-name" placeholder="أدخل اللقب" />
+      <label for="address">عنوان الإرسال</label>
+      <input type="text" id="address" name="address" required autocomplete="address-line1" placeholder="أدخل عنوان الإرسال" />
+      <label for="phone">رقم الهاتف</label>
+      <input type="tel" id="phone" name="phone" required pattern="^\+?[\d\s\-]{6,15}$" autocomplete="tel" placeholder="مثال: +966512345678" />
+      <button type="submit" aria-label="إرسال الطلب">أرسل الطلب</button>
+
+      <p id="formAlert" role="alert" style="color:#d9534f; text-align:center; padding-top:0.6rem;"></p>
+    </form>
+  </section>
+
+  <!-- معلومات التواصل -->
+  <footer class="glass" aria-label="Contact information">
+    <p>للتواصل: <a href="mailto:info@ornut.com">info@ornut.com</a></p>
+    <p>
+      <a href="https://www.facebook.com/ornut" target="_blank" rel="noopener">فيسبوك</a> | 
+      <a href="https://www.instagram.com/ornut" target="_blank" rel="noopener">إنستغرام</a> | 
+      <a href="https://twitter.com/ornut" target="_blank" rel="noopener">تويتر</a>
+    </p>
+    <p><strong>#TheGoldenBite</strong></p>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    // Smooth scrolling is enabled via CSS scroll-behavior.
+
+    // 3D Tilt Animation:
+    const products = document.querySelectorAll('.product.tilt');
+
+    products.forEach((card) => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left; // Mouse X inside element
+        const y = e.clientY - rect.top;  // Mouse Y inside element
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const deltaX = (x - centerX) / centerX; // -1 to 1
+        const deltaY = (y - centerY) / centerY; // -1 to 1
+        
+        // Max tilt angles
+        const maxTilt = 15; // degrees
+
+        card.style.transform = `
+          rotateX(${ -deltaY * maxTilt }deg)
+          rotateY(${ deltaX * maxTilt }deg)
+          translateZ(30px)
+        `;
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'rotateX(0) rotateY(0) translateZ(0)';
+      });
+
+      card.addEventListener('touchmove', (e) => {
+        // Disable 3D tilt on touch for performance & UX reasons (optional)
+      });
+    });
+
+    // Haptic Feedback Visual (vibration equivalent) on click/tap
+    function vibrateElement(el) {
+      // Visual haptic: small shake animation
+      el.style.transition = 'transform 0.05s ease';
+      el.style.transform += ' translateX(3px)';
+      setTimeout(() => {
+        el.style.transform = el.style.transform.replace(' translateX(3px)', '');
+      }, 50);
+      // If the device supports vibration API:
+      if (navigator.vibrate) {
+        navigator.vibrate(50);
+      }
+    }
+
+    // Attach haptic feedback on clicks and touches for all clickable icons/buttons
+    document.querySelectorAll('button, .product').forEach((element) => {
+      element.addEventListener('click', (e) => {
+        vibrateElement(element);
+      });
+    });
+
+    // Using AOS or Framer Motion is specified; here, we will add simple fade & slide animations on scroll with IntersectionObserver
+    // (As Framer Motion and AOS need extra libraries, manually implement a smooth scroll animation.)
+
+    const animatedElements = document.querySelectorAll('.glass, .product');
+
+    const observerOptions = {
+      threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if(entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'none';
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    animatedElements.forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(30px)';
+      el.style.transition = 'opacity 0.7s ease-out, transform 0.7s ease-out';
+      observer.observe(el);
+    });
+
+
+    // Form validation & simple alert
+    const form = document.getElementById('orderForm');
+    const alertBox = document.getElementById('formAlert');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      // Clear alert
+      alertBox.textContent = '';
+      // Simple validation (HTML5 validation helps also)
+      if (!form.checkValidity()) {
+        alertBox.textContent = 'يرجى تعبئة الحقول المطلوبة بشكل صحيح.';
+        return;
+      }
+      // Valid submission - you can integrate with backend here
+
+      alertBox.style.color = 'green';
+      alertBox.textContent = 'تم إرسال طلبك بنجاح، شكرًا لك!';
+
+      // Reset form after submission
+      form.reset();
+
+      // Optionally scroll to alert message
+      alertBox.scrollIntoView({ behavior: 'smooth' });
+    });
+  </script>
+</body>
+</html>
